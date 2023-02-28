@@ -1,12 +1,16 @@
 <script setup>
+import { computed, ref } from "vue";
 import sourceImg from "./assets/source.png";
 import dayjs from "dayjs";
 
-const refDate = dayjs().subtract(1, "month");
-const startOfMonth = refDate.startOf("month").format("YYYY年MM月DD日");
-const endOfMonth = refDate.endOf("month").format("YYYY年MM月DD日");
-const month = String(refDate.month() + 1).padStart(2, "0");
-const year = refDate.year();
+const isThisMonth = ref(true)
+function onChange(e) { isThisMonth.value = e.target.checked }
+
+const refDate = computed(() => dayjs().subtract(isThisMonth.value ? 0 : 1, "month"));
+const startOfMonth = computed(() => refDate.value.startOf("month").format("YYYY年MM月DD日"));
+const endOfMonth = computed(() => refDate.value.endOf("month").format("YYYY年MM月DD日"));
+const month = computed(() => String(refDate.value.month() + 1).padStart(2, "0"));
+const year = computed(() => refDate.value.year());
 </script>
 
 <template>
@@ -16,6 +20,7 @@ const year = refDate.year();
   <div class="date1">{{ startOfMonth }}-{{ endOfMonth }}</div>
   <div class="date2">{{ month }}</div>
   <div class="date3">{{ year }}</div>
+  <input type="checkbox" :checked="isThisMonth" @change="onChange" class="checkbox">
 </template>
 
 <style scoped>
@@ -23,6 +28,7 @@ const year = refDate.year();
   width: 100%;
   overflow: hidden;
 }
+
 .account1 {
   position: absolute;
   left: 533px;
@@ -32,6 +38,7 @@ const year = refDate.year();
   filter: blur(0.4px);
   background: url("./assets/background1.jpg") -170px -143px;
 }
+
 .account2 {
   position: absolute;
   left: 911px;
@@ -41,6 +48,7 @@ const year = refDate.year();
   filter: blur(0.4px);
   background: url("./assets/background1.jpg") -515px -132px;
 }
+
 .date1 {
   position: absolute;
   left: 875px;
@@ -50,6 +58,7 @@ const year = refDate.year();
   filter: blur(0.4px);
   background: url("./assets/background2.jpg") -515px -30px;
 }
+
 .date2 {
   position: absolute;
   left: 940px;
@@ -59,6 +68,7 @@ const year = refDate.year();
   filter: blur(0.4px);
   background: #fff;
 }
+
 .date3 {
   position: absolute;
   left: 647px;
@@ -67,5 +77,9 @@ const year = refDate.year();
   font-size: 22px;
   filter: blur(0.5px);
   background: #fff;
+}
+
+.checkbox {
+  display: none;
 }
 </style>
